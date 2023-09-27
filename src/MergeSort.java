@@ -1,105 +1,91 @@
-import java.util.Arrays;
+
 /**
- * Class that preforms merge sort on basic array of ints
+ * A class that conducts merge sort on array of ints
+ * 
+ * @author Wyatt Murphy
  */
-public class MergeSort{
+public class MergeSort {
 
-    protected int [] before = {21, 13, 8, 5, 3, 2, 1, 1};
-    protected int [] after;
-
-    // fields
-
-    // construtor
-    MergeSort(){
-
-    }
-    //methods
-    protected void preformMergeSort(int[] unsorted){
+    protected static void mergeSort(int[] ary) {
         // base case -> contains single element; single elements are inherintly sorted
-        if(unsorted.length == 1){
+        if (ary.length == 1) {
             return;
         }
-        int midPoint = unsorted.length / 2;
-        int endPoint = unsorted.length;
 
-        int [] splitRight = Arrays.copyOfRange(unsorted, 0, midPoint);
-        int [] splitLeft = Arrays.copyOfRange(unsorted, midPoint, endPoint);
+        int midPoint = ary.length / 2;
+        int endPoint = ary.length;
+        int[] left = new int[midPoint];
+        int[] right = new int[endPoint - midPoint];
 
-        // recursive calls 
-        preformMergeSort(splitRight);
-        preformMergeSort(splitLeft);
-        this. after = this.sort(splitRight, splitLeft);
-        
+        // populate left and right arrays
+        for (int i = 0; i < midPoint; ++i) {
+            left[i] = ary[i];
+        }
 
+        for (int j = midPoint; j < endPoint; ++j) {
+            right[j - midPoint] = ary[j];
+        }
+
+        // recursive calls
+        mergeSort(left);
+        mergeSort(right);
+
+        // merge step
+        merge(ary, right, left);
 
     }
 
-    private int [] sort(int [] right, int[] left ){
-        int max;
-        int total = right.length + left.length;
-        // new int array to be returned
-        int [] merged = new int[total];
+    public static void merge(int[] merged, int[] right, int[] left) {
+        int maxRight = right.length;
+        int maxLeft = left.length;
 
-        if(right.length >= left.length){
-            max = right.length;
-        }else{
-            max = left.length;
-        }
-
+        // index pointers
         int r, l, m;
-        r = l = m = 0; 
-        
-        while((l < max) && (r < max)){
-            if(right[r] < left[l]){
+        r = l = m = 0;
+
+        // begin ordered merging
+        while ((l < maxLeft) && (r < maxRight)) {
+            if (right[r] < left[l]) {
                 merged[m] = right[r];
-                ++l;
-            }else{
-                merged[m] = left[l];
                 ++r;
+            } else {
+                merged[m] = left[l];
+                ++l;
             }
             ++m;
         }
 
-        // exhaust all left over elements
-        while (r < max) {
+        // exhaust all remaining elements
+        while (r < maxRight) {
             merged[m] = right[r];
             ++r;
             ++m;
         }
 
-        while (l < max) {
+        while (l < maxLeft) {
             merged[m] = left[l];
             ++l;
             ++m;
         }
-        
-        return merged;
+
     }
 
-    public void printPre(){
-        System.out.println("Array before running merge sort");
-        for (int i : this.before) {
+    public static void printArray(int[] printme) {
+        for (int i : printme) {
             System.out.print(" " + i);
         }
         System.out.println();
     }
 
-    public void printPost(){
-        System.out.println("Array after running merge sort");
-        for (int i : this.after) {
-            System.out.print(" " + i);
-        }
-        System.out.println();
-    }
+    public static void main(String[] args) {
 
-    public static void main(String[] args){
-        MergeSort dnc = new MergeSort();
-        dnc.printPre();
-        dnc.preformMergeSort(dnc.before);
-        dnc.printPost();
-        
-        
-
+        // little demo
+        int[] thearray = { 3, 21, 8, 5, 34, 2, 1, 1, 13 };
+        System.out.println("Before Sorting");
+        printArray(thearray);
+        mergeSort(thearray);
+        System.out.println("After Sorting");
+        printArray(thearray);
     }
 
 }
